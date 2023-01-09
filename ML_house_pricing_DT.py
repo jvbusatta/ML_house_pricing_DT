@@ -46,8 +46,8 @@ from sklearn.metrics import mean_absolute_error
 
 predicted_home_prices = melbourne_model.predict(X)
 
-print(mean_absolute_error(y, predicted_home_prices))
-
+print('MAE(DECISION TREE REGRESSOR wout split): ',mean_absolute_error(y, predicted_home_prices))
+print(' ')
 #model validation
 
 from sklearn.model_selection import train_test_split
@@ -60,6 +60,32 @@ melbourne_model = DecisionTreeRegressor()
 #Fit model
 melbourne_model.fit(train_X, train_y)
 val_predictions = melbourne_model.predict(val_X)
-print(mean_absolute_error(val_y, val_predictions))
+print('MAE(DECISION TREE REGRESSOR): ', mean_absolute_error(val_y, val_predictions))
+print(' ')
+#controlling the tree deep
+from sklearn.metrics import mean_absolute_error
+from sklearn.tree import DecisionTreeRegressor
 
-    
+def get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y):
+    model = DecisionTreeRegressor(max_leaf_nodes=max_leaf_nodes,random_state=0)
+    model.fit(train_X, train_y)
+    preds_val = model.predict(val_X)
+    mae = mean_absolute_error(val_y, preds_val)
+    return mae
+
+#comparing different mae valeus according to values of max_leaf_nodes:
+for max_leaf_nodes in [5, 50, 500, 5000]:
+    my_mae = get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y)
+    print("Max leaf nodes: %d  \t\t Mean Absolute Error:  %d" %(max_leaf_nodes, my_mae))
+
+#here we can notice that 500 is the most acceptable value of leaves
+
+#now using random forest to evaluate the performance of prediction
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
+
+forest_model = RandomForestRegressor(random_state=1)
+forest_model.fit(train_X, train_y)
+melb_preds = forest_model.predict(val_X)
+print('MAE(RANDOM FOREST): ', mean_absolute_error(val_y, melb_preds))
+
