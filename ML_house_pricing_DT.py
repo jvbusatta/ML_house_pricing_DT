@@ -29,11 +29,37 @@ print(X.head())
 #Evaluate
 
 from sklearn.tree import DecisionTreeRegressor
+#defining model
 melbourne_model = DecisionTreeRegressor(random_state=1)
 
 print('------------------')
+#fitting model
 melbourne_model.fit(X,y)
 print("Making predictions for the following 5 houses:")
 print(X.head())
+
 print("The predictions are")
 print(melbourne_model.predict(X.head()))
+
+#calculating the Mean Absulute Error (MAE)
+from sklearn.metrics import mean_absolute_error
+
+predicted_home_prices = melbourne_model.predict(X)
+
+print(mean_absolute_error(y, predicted_home_prices))
+
+#model validation
+
+from sklearn.model_selection import train_test_split
+
+train_X, val_X, train_y, val_y = train_test_split(X, y, random_state = 0)
+
+#Define model
+melbourne_model = DecisionTreeRegressor()
+
+#Fit model
+melbourne_model.fit(train_X, train_y)
+val_predictions = melbourne_model.predict(val_X)
+print(mean_absolute_error(val_y, val_predictions))
+
+    
